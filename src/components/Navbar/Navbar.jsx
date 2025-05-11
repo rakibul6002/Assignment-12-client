@@ -3,18 +3,32 @@ import { Link } from "react-router-dom";
 import Logo from "../../assets/Logo/images.jpg";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { AuthContext } from "../../provider/Auth/AuthProvider";
+import Swal from "sweetalert2";
 
 const Navbar = () => {
   const { user, logOut } = useContext(AuthContext);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const handleLogout = async () => {
-    try {
-      await logOut();
-      setDropdownOpen(false); // Close dropdown on logout
-    } catch (error) {
-      console.error("Logout error:", error.message);
-    }
+  const handleLogout = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will be logged out from your account.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, logout"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await logOut();
+          setDropdownOpen(false);
+          Swal.fire("Logged Out", "You have been successfully logged out.", "success");
+        } catch (error) {
+          Swal.fire("Error", "Failed to logout. Try again.", "error");
+        }
+      }
+    });
   };
 
   return (
@@ -33,7 +47,6 @@ const Navbar = () => {
 
         <div className="flex items-center gap-4">
           <IoMdNotificationsOutline className="text-2xl text-gray-700" />
-
           {user ? (
             <div className="relative">
               <img
