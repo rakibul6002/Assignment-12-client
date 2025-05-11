@@ -21,7 +21,7 @@ export default function JoinUs() {
         await signInUser(data.email, data.password);
       } else {
         await createUser(data.email, data.password);
-        // Handle profile update if needed
+        
         if (photo) {
           // Update user profile with photo here if needed
         }

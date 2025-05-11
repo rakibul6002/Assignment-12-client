@@ -59,7 +59,7 @@ const Navbar = () => {
                 <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-50">
                   <p className="px-4 py-2 font-semibold">{user.displayName || "User"}</p>
                   <Link
-                    to="/dashboard"
+                    to="dashboard"
                     className="block px-4 py-2 hover:bg-gray-100"
                     onClick={() => setDropdownOpen(false)}
                   >
