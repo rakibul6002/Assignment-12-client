@@ -16,7 +16,7 @@ export default function Sidebar() {
   const { user } = useContext(AuthContext);
   const [newUser, setNewUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  
   useEffect(() => {
     if (user?.email) {
       (async () => {
@@ -41,7 +41,7 @@ export default function Sidebar() {
     }
   }, [user]);
 
-  const role = newUser?.role;
+  const role = '';
 
   if (loading) {
     return <div className="text-center py-4 text-white">Loading...</div>;
@@ -59,75 +59,108 @@ export default function Sidebar() {
 
       {/* Navigation */}
       <ul className="space-y-3">
-        <NavLink
-          to="/dashboard"
-          className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
-        >
-          <MdSpaceDashboard className="text-2xl" /> Dashboard
-        </NavLink>
+  <NavLink
+    to="/dashboard"
+    className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
+  >
+    <MdSpaceDashboard className="text-2xl" /> Dashboard
+  </NavLink>
 
-        {role === "Admin" ? (
-          <>
-            <NavLink
-              to="/dashboard/profile"
-              className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
-            >
-              <RiAdminFill className="text-2xl" /> Admin Profile
-            </NavLink>
-            <NavLink
-              to="/dashboard/manage-users"
-              className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
-            >
-              <MdPerson className="text-2xl" /> Manage Users
-            </NavLink>
-            <NavLink
-              to="/dashboard/manage-meals"
-              className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
-            >
-              <MdFastfood className="text-2xl" /> Manage Meals
-            </NavLink>
-            <NavLink
-              to="/dashboard/manage-reviews"
-              className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
-            >
-              <MdRateReview className="text-2xl" /> Manage Reviews
-            </NavLink>
-            <NavLink
-              to="/dashboard/upcoming-meals"
-              className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
-            >
-              <MdFastfood className="text-2xl" /> Upcoming Meals
-            </NavLink>
-          </>
-        ) : (
-          <>
-            <NavLink
-              to="/dashboard/profile"
-              className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
-            >
-              <CgProfile className="text-2xl" /> My Profile
-            </NavLink>
-            <NavLink
-              to="/dashboard/my-meals"
-              className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
-            >
-              <MdFastfood className="text-2xl" /> Requested Meals
-            </NavLink>
-            <NavLink
-              to="/dashboard/reviews"
-              className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
-            >
-              <MdRateReview className="text-2xl" /> My Reviews
-            </NavLink>
-            <NavLink
-              to="/dashboard/payments"
-              className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
-            >
-              💳 Payment History
-            </NavLink>
-          </>
-        )}
-      </ul>
+  {role === "Admin" ? (
+    <>
+      {/* Admin Profile */}
+      <NavLink
+        to="adminProfile"
+        className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
+      >
+        <RiAdminFill className="text-2xl" /> Admin Profile
+      </NavLink>
+
+      {/* Manage Users */}
+      <NavLink
+        to="manageUser"
+        className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
+      >
+        <MdPerson className="text-2xl" /> Manage Users
+      </NavLink>
+
+      {/* Add Meal */}
+      <NavLink
+        to="addMeal"
+        className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
+      >
+        <MdOutlineAddShoppingCart className="text-2xl" /> Add Meal
+      </NavLink>
+
+      {/* All Meals */}
+      <NavLink
+        to="allMeal"
+        className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
+      >
+        <MdFastfood className="text-2xl" /> All Meals
+      </NavLink>
+
+      {/* All Reviews */}
+      <NavLink
+        to="allReviews"
+        className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
+      >
+        <MdRateReview className="text-2xl" /> All Reviews
+      </NavLink>
+
+      {/* Serve Meals */}
+      <NavLink
+        to="serveMeal"
+        className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
+      >
+        <MdFastfood className="text-2xl" /> Serve Meals
+      </NavLink>
+
+      {/* Upcoming Meals */}
+      <NavLink
+        to="upcomingMeal"
+        className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
+      >
+        <MdFastfood className="text-2xl" /> Upcoming Meals
+      </NavLink>
+    </>
+  ) : (
+    <>
+      {/* User Profile */}
+      <NavLink
+        to="myProfile"
+        className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
+      >
+        <CgProfile className="text-2xl" /> My Profile
+      </NavLink>
+
+      {/* Requested Meals */}
+      <NavLink
+        to="requestedMeal"
+        className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
+      >
+        <MdFastfood className="text-2xl" /> Requested Meals
+      </NavLink>
+
+      {/* My Reviews */}
+      <NavLink
+        to="myReviews"
+        className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
+      >
+        <MdRateReview className="text-2xl" /> My Reviews
+      </NavLink>
+
+      {/* Payment History */}
+      <NavLink
+        to="paymentHistory"
+        className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-indigo-100"
+      >
+        💳 Payment History
+      </NavLink>
+    </>
+  )}
+</ul>
+
     </div>
   );
 }
