@@ -1,26 +1,30 @@
 import React, { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+import { FaHeart, FaStar, FaEye, FaEdit, FaTrash, FaSortUp, FaSortDown } from 'react-icons/fa';
 
 export default function AllMeal() {
   const [meals, setMeals] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [sortBy, setSortBy] = useState(''); // 'likes' or 'reviews_count' or ''
-  const [order, setOrder] = useState('desc'); // 'asc' or 'desc'
+  const [sortBy, setSortBy] = useState('');
+  const [order, setOrder] = useState('desc');
   const [error, setError] = useState(null);
-
+  const navigate = useNavigate();
+console.log('====================================');
+console.log(meals);
+console.log('====================================');
   const fetchMeals = async () => {
     setLoading(true);
     setError(null);
 
-    let url = 'https://your-api-url.com/meals'; // Replace with your actual API URL
+    let url = 'http://localhost:5000/meals';
     if (sortBy) {
       url += `?sortBy=${sortBy}&order=${order}`;
     }
 
     try {
       const res = await fetch(url);
-      if (!res.ok) {
-        throw new Error('Failed to fetch meals');
-      }
+      if (!res.ok) throw new Error('Failed to fetch meals');
       const data = await res.json();
       setMeals(data);
     } catch (err) {
@@ -35,23 +39,32 @@ export default function AllMeal() {
   }, [sortBy, order]);
 
   const handleDelete = async (mealId) => {
-    if (!window.confirm('Are you sure you want to delete this meal?')) return;
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "This action cannot be undone!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e11d48',
+      cancelButtonColor: '#3b82f6',
+      confirmButtonText: 'Yes, delete it!',
+    });
 
-    try {
-      const res = await fetch(`https://your-api-url.com/meals/${mealId}`, {
-        method: 'DELETE',
-      });
-      if (!res.ok) throw new Error('Failed to delete meal');
-      alert('Meal deleted successfully');
-      fetchMeals(); // Refresh list
-    } catch (err) {
-      alert(err.message);
+    if (result.isConfirmed) {
+      try {
+        const res = await fetch(`http://localhost:5000/meals/${mealId}`, {
+          method: 'DELETE',
+        });
+        if (!res.ok) throw new Error('Failed to delete meal');
+        Swal.fire('Deleted!', 'Meal has been deleted.', 'success');
+        fetchMeals();
+      } catch (err) {
+        Swal.fire('Error!', err.message, 'error');
+      }
     }
   };
 
   const handleSortChange = (field) => {
     if (sortBy === field) {
-      // toggle order
       setOrder(order === 'asc' ? 'desc' : 'asc');
     } else {
       setSortBy(field);
@@ -59,87 +72,105 @@ export default function AllMeal() {
     }
   };
 
+  const renderSortIcon = (field) => {
+    if (sortBy !== field) return null;
+    return order === 'asc' ? (
+      <FaSortUp className="inline ml-1 text-pink-500" />
+    ) : (
+      <FaSortDown className="inline ml-1 text-pink-500" />
+    );
+  };
+
   return (
-    <div className="p-4">
-      <h1 className="text-3xl font-bold mb-6 text-indigo-700">All Meals</h1>
+    <div className="p-6 max-w-7xl mx-auto">
+      <h1 className="text-3xl font-extrabold mb-6 text-pink-600 text-center">🍽️ All Meals</h1>
 
-      <div className="mb-4 flex justify-end gap-4">
-        <button
-          onClick={() => handleSortChange('likes')}
-          className={`px-4 py-2 rounded ${
-            sortBy === 'likes' ? 'bg-indigo-600 text-white' : 'bg-gray-200'
-          }`}
-        >
-          Sort by Likes {sortBy === 'likes' ? (order === 'asc' ? '↑' : '↓') : ''}
-        </button>
-        <button
-          onClick={() => handleSortChange('reviews_count')}
-          className={`px-4 py-2 rounded ${
-            sortBy === 'reviews_count' ? 'bg-indigo-600 text-white' : 'bg-gray-200'
-          }`}
-        >
-          Sort by Reviews {sortBy === 'reviews_count' ? (order === 'asc' ? '↑' : '↓') : ''}
-        </button>
-      </div>
+      {loading && <p className="text-center text-lg text-gray-600 mb-4">Loading meals...</p>}
+      {error && <p className="text-center text-red-500 mb-4">{error}</p>}
 
-      {loading && <p>Loading meals...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-
-      {!loading && !error && (
-        <div className="overflow-x-auto">
-          <table className="min-w-full border border-gray-300 rounded">
-            <thead className="bg-indigo-100">
+      <div className="overflow-x-auto rounded-lg shadow-lg">
+        <table className="min-w-full bg-white">
+          <thead className="bg-pink-100 text-pink-700">
+            <tr>
+              <th className="py-3 px-4 text-left rounded-tl-lg">Image</th>
+              <th className="py-3 px-4 text-left">Title</th>
+              <th
+                className="py-3 px-4 text-right cursor-pointer select-none"
+                onClick={() => handleSortChange('likes')}
+                title="Sort by Likes"
+              >
+                Likes {renderSortIcon('likes')}
+              </th>
+              <th
+                className="py-3 px-4 text-right cursor-pointer select-none"
+                onClick={() => handleSortChange('reviews_count')}
+                title="Sort by Reviews"
+              >
+                Reviews {renderSortIcon('reviews_count')}
+              </th>
+              <th className="py-3 px-4 text-right">Rating</th>
+              <th className="py-3 px-4 text-left">Distributor</th>
+              <th className="py-3 px-4 text-center rounded-tr-lg">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {meals.length === 0 && !loading ? (
               <tr>
-                <th className="border px-4 py-2 text-left">Title</th>
-                <th className="border px-4 py-2 text-right">Likes</th>
-                <th className="border px-4 py-2 text-right">Reviews</th>
-                <th className="border px-4 py-2 text-right">Rating</th>
-                <th className="border px-4 py-2 text-left">Distributor</th>
-                <th className="border px-4 py-2 text-center">Actions</th>
+                <td colSpan="7" className="text-center py-8 text-gray-500 font-medium">
+                  No meals found.
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {meals.length === 0 ? (
-                <tr>
-                  <td colSpan="6" className="text-center p-4 font-semibold text-gray-600">
-                    No data found.
+            ) : (
+              meals.map((meal) => (
+                <tr
+                  key={meal._id}
+                  className="border-b last:border-b-0 hover:bg-pink-50 transition-colors duration-200"
+                >
+                  <td className="py-3 px-4">
+                    <img
+                      src={meal.image || 'https://via.placeholder.com/60'}
+                      alt={meal.title}
+                      className="w-16 h-16 object-cover rounded-xl"
+                    />
+                  </td>
+                  <td className="py-3 px-4 text-gray-800 font-semibold">{meal.title}</td>
+                  <td className="py-3 px-4 text-right text-pink-600 font-semibold flex justify-end items-center gap-1">
+                    <FaHeart /> {meal.likes}
+                  </td>
+                  <td className="py-3 px-4 text-right text-gray-700 font-medium">💬 {meal.reviews_count}</td>
+                  <td className="py-3 px-4 text-right text-yellow-500 font-semibold flex justify-end items-center gap-1">
+                    <FaStar /> {meal.rating?.toFixed(1) || 'N/A'}
+                  </td>
+                  <td className="py-3 px-4 text-gray-600">{meal.distributor_name || 'Unknown'}</td>
+                  <td className="py-3 px-4 text-center space-x-2">
+                    <button
+                      onClick={() => navigate(`/dashboard/viewMeal/${meal._id}`)}
+                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-full text-sm inline-flex items-center gap-1 transition"
+                      title="View Meal"
+                    >
+                      <FaEye />
+                    </button>
+                    <button
+                      onClick={() => navigate(`/dashboard/updateMeal/${meal._id}`)}
+                      className="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-full text-sm inline-flex items-center gap-1 transition"
+                      title="Update Meal"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(meal._id)}
+                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-sm inline-flex items-center gap-1 transition"
+                      title="Delete Meal"
+                    >
+                      <FaTrash />
+                    </button>
                   </td>
                 </tr>
-              ) : (
-                meals.map((meal) => (
-                  <tr key={meal._id || meal.id} className="hover:bg-gray-50">
-                    <td className="border px-4 py-2">{meal.title}</td>
-                    <td className="border px-4 py-2 text-right">{meal.likes}</td>
-                    <td className="border px-4 py-2 text-right">{meal.reviews_count}</td>
-                    <td className="border px-4 py-2 text-right">{meal.rating.toFixed(1)}</td>
-                    <td className="border px-4 py-2">{meal.distributorName}</td>
-                    <td className="border px-4 py-2 text-center space-x-2">
-                      <button
-                        onClick={() => alert(`View meal: ${meal.title}`)}
-                        className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm"
-                      >
-                        View
-                      </button>
-                      <button
-                        onClick={() => alert(`Update meal: ${meal.title}`)}
-                        className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm"
-                      >
-                        Update
-                      </button>
-                      <button
-                        onClick={() => handleDelete(meal._id || meal.id)}
-                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

@@ -177,10 +177,9 @@ export default function AddMeal() {
             className="select select-bordered w-full rounded-xl shadow-sm focus:ring-2 focus:ring-pink-300"
           >
             <option value="">Select category</option>
-            <option value="breakfast">🥞 Breakfast</option>
-            <option value="lunch">🍛 Lunch</option>
-            <option value="dinner">🍲 Dinner</option>
-            <option value="snacks">🍪 Snacks</option>
+            <option value="Breakfast">🥞 Breakfast</option>
+            <option value="Lunch">🍛 Lunch</option>
+            <option value="Dinner">🍲 Dinner</option>
           </select>
         </div>
 
