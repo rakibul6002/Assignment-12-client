@@ -112,64 +112,69 @@ export default function AddMeal() {
     );
   }
 
-  return (
-    <div className="max-w-4xl mx-auto px-4 py-10">
-      <h2 className="text-3xl font-bold text-center text-pink-600 mb-8">
-        🍽️ Add a Delicious Meal
+ return (
+    <div className="max-w-4xl mx-auto px-4 py-12">
+      <h2 className="text-4xl font-bold text-center text-pink-500 mb-10 drop-shadow-sm">
+        🍱 Share Your Yummy Meal!
       </h2>
+
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-2xl shadow-lg p-8 space-y-6 border border-gray-100"
+        className="bg-gradient-to-br from-pink-50 to-white border border-pink-100 shadow-2xl rounded-3xl p-10 space-y-6 transition-all"
         encType="multipart/form-data"
       >
         <div>
-          <label className="block text-gray-700 font-medium mb-1">Meal Title</label>
+          <label className="block text-gray-700 font-semibold mb-2">🍽️ Meal Title</label>
           <input
             type="text"
             name="title"
             required
-            className="input input-bordered w-full rounded-xl"
+            placeholder="Ex: Spicy Chicken Curry"
+            className="input input-bordered w-full rounded-xl shadow-sm focus:ring-2 focus:ring-pink-300"
           />
         </div>
 
         <div>
-          <label className="block text-gray-700 font-medium mb-1">Ingredients</label>
+          <label className="block text-gray-700 font-semibold mb-2">🥗 Ingredients</label>
           <input
             type="text"
             name="ingredients"
             required
-            className="input input-bordered w-full rounded-xl"
+            placeholder="Ex: Rice, Chicken, Spices"
+            className="input input-bordered w-full rounded-xl shadow-sm focus:ring-2 focus:ring-pink-300"
           />
         </div>
 
         <div>
-          <label className="block text-gray-700 font-medium mb-1">Description</label>
+          <label className="block text-gray-700 font-semibold mb-2">📝 Description</label>
           <textarea
             name="description"
             required
             rows={3}
-            className="textarea textarea-bordered w-full rounded-xl"
+            placeholder="Describe your meal..."
+            className="textarea textarea-bordered w-full rounded-xl shadow-sm focus:ring-2 focus:ring-pink-300"
           ></textarea>
         </div>
 
         <div>
-          <label className="block text-gray-700 font-medium mb-1">Price (৳)</label>
+          <label className="block text-gray-700 font-semibold mb-2">💰 Price (৳)</label>
           <input
             type="number"
             min="0"
             step="0.01"
             name="price"
             required
-            className="input input-bordered w-full rounded-xl"
+            placeholder="Ex: 120"
+            className="input input-bordered w-full rounded-xl shadow-sm focus:ring-2 focus:ring-pink-300"
           />
         </div>
 
         <div>
-          <label className="block text-gray-700 font-medium mb-1">Category</label>
+          <label className="block text-gray-700 font-semibold mb-2">📂 Category</label>
           <select
             name="category"
             required
-            className="select select-bordered w-full rounded-xl"
+            className="select select-bordered w-full rounded-xl shadow-sm focus:ring-2 focus:ring-pink-300"
           >
             <option value="">Select category</option>
             <option value="breakfast">🥞 Breakfast</option>
@@ -180,20 +185,20 @@ export default function AddMeal() {
         </div>
 
         <div>
-          <label className="block text-gray-700 font-medium mb-1">Meal Image</label>
+          <label className="block text-gray-700 font-semibold mb-2">📸 Meal Image</label>
           <input
             type="file"
             name="image"
             accept="image/*"
             required
-            className="file-input file-input-bordered w-full rounded-xl"
+            className="file-input file-input-bordered w-full rounded-xl shadow-sm"
           />
         </div>
 
         <button
           type="submit"
           disabled={loadingSubmit}
-          className="btn bg-pink-500 text-white w-full hover:bg-pink-600 rounded-xl transition duration-300"
+          className="btn w-full rounded-xl bg-gradient-to-r from-pink-500 to-pink-600 text-white font-semibold hover:brightness-110 hover:scale-[1.01] transition-all duration-300"
         >
           {loadingSubmit ? "Uploading..." : "Add Meal 🍴"}
         </button>
