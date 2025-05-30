@@ -1,15 +1,49 @@
-// AddMeal.jsx
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { AuthContext } from "../../provider/Auth/AuthProvider";
 
 export default function AddMeal() {
-  const [loading, setLoading] = useState(false);
+  const { user } = useContext(AuthContext);
+  const [newUser, setNewUser] = useState(null);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
   const navigate = useNavigate();
+
+  // Fetch user data by email from backend API
+  useEffect(() => {
+    async function fetchUserData() {
+      if (!user?.email) return;
+
+      try {
+        setLoadingUser(true);
+        const res = await fetch(`http://localhost:5000/users/${user.email}`);
+        if (!res.ok) throw new Error("Failed to fetch user data");
+        const data = await res.json();
+        setNewUser(data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        setNewUser(null);
+      } finally {
+        setLoadingUser(false);
+      }
+    }
+
+    fetchUserData();
+  }, [user]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
+
+    if (!newUser) {
+      Swal.fire({
+        icon: "error",
+        title: "User data missing",
+        text: "Cannot submit meal without user data.",
+      });
+      return;
+    }
 
     const formData = new FormData();
     formData.append("title", form.title.value);
@@ -18,12 +52,12 @@ export default function AddMeal() {
     formData.append("price", form.price.value);
     formData.append("category", form.category.value);
     formData.append("post_time", new Date().toISOString());
-    formData.append("distributor_name", "Hostel Admin");
-    formData.append("distributor_email", "admin@hostel.com");
+    formData.append("distributor_name", newUser.displayName || newUser.name || "Unknown");
+    formData.append("distributor_email", newUser.email);
     formData.append("image", form.image.files[0]);
 
     try {
-      setLoading(true);
+      setLoadingSubmit(true);
       const res = await fetch("http://localhost:5000/meals", {
         method: "POST",
         body: formData,
@@ -62,9 +96,21 @@ export default function AddMeal() {
         text: error.message || "Something went wrong.",
       });
     } finally {
-      setLoading(false);
+      setLoadingSubmit(false);
     }
   };
+
+  if (loadingUser) {
+    return <div className="text-center py-20">Loading user data...</div>;
+  }
+
+  if (!newUser) {
+    return (
+      <div className="text-center py-20 text-red-500">
+        Failed to load user data. Please refresh or try again later.
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
@@ -146,10 +192,10 @@ export default function AddMeal() {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={loadingSubmit}
           className="btn bg-pink-500 text-white w-full hover:bg-pink-600 rounded-xl transition duration-300"
         >
-          {loading ? "Uploading..." : "Add Meal 🍴"}
+          {loadingSubmit ? "Uploading..." : "Add Meal 🍴"}
         </button>
       </form>
     </div>
