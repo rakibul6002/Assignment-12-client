@@ -12,7 +12,7 @@ export default function MealsByCategory() {
   const [meals, setMeals] = useState([]);
 
   useEffect(() => {
-    fetch("https://your-api-url.com/meals") // Replace with your API
+    fetch("http://localhost:5000/meals") // Replace with your API
       .then((res) => res.json())
       .then((data) => setMeals(data));
   }, []);

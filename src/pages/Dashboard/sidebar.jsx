@@ -41,7 +41,7 @@ export default function Sidebar() {
     }
   }, [user]);
 
-  const role = '';
+  const role = 'Admin';
 
   if (loading) {
     return <div className="text-center py-4 text-white">Loading...</div>;
