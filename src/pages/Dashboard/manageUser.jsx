@@ -160,7 +160,7 @@ export default function ManageUsers() {
                         {user.subscription ? (
                           <span className="text-indigo-600 font-semibold">Premium 💎</span>
                         ) : (
-                          <span className="text-gray-500">Free 🍃</span>
+                          <span className="text-gray-500">{user.badge}</span>
                         )}
                       </td>
                       <td className="px-4 py-3 text-center">

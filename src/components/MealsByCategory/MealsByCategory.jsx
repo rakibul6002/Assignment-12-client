@@ -68,7 +68,7 @@ export default function MealsByCategory() {
                     <p className="text-gray-600 text-sm mb-3">{meal.description.slice(0, 60)}...</p>
                     <p className="text-pink-600 font-semibold text-lg mb-2">৳{meal.price}</p>
                     <Link
-                      to={`/meal/${meal._id}`}
+                      to={`/mealsdetails/${meal._id}`}
                       className="inline-block mt-2 text-white bg-pink-500 hover:bg-pink-600 px-4 py-2 rounded-full text-sm transition"
                     >
                       View Details

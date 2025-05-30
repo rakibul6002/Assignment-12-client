@@ -16,6 +16,9 @@ import MyProfile from "../../pages/Dashboard/myProfile";
 import RequestedMeal from "../../pages/Dashboard/requestedMeal";
 import MyReviews from "../../pages/Dashboard/myReviews";
 import PaymentHistory from "../../pages/Dashboard/paymentHistory";
+import MembershipCheckout from "../../components/MembershipCheckout/MembershipCheckout";
+import MealsDetails from "../../components/MealsDetails/MealsDetails";
+import { param } from "framer-motion/client";
 
 
 const Router = createBrowserRouter([
@@ -32,6 +35,19 @@ const Router = createBrowserRouter([
             path: "/joinus",
             element: <JoinUs/>,
             },
+            {
+            path: "/checkout/:packageName",
+            element: <MembershipCheckout />,
+            },
+            {
+        path: "/mealsdetails/:id",
+        loader: async ({ params }) => {
+          const res = await fetch(`http://localhost:5000/meals/id/${params.id}`);
+          if (!res.ok) throw new Response("Not Found", { status: 404 });
+          return res.json();
+        },
+        element: <MealsDetails />,
+      },
         ]
     },
     {
